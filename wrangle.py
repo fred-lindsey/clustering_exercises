@@ -42,6 +42,22 @@ def get_connection(db, user=env.user, host=env.host, password=env.password):
 
 #____________________________________________________________________________________
 
+def get_mall_customers(use_cache=True):
+    """Retrieves mall Customer dataset from CodeUp server"""
+    filename = "mall_customers.csv"
+    if os.path.isfile(filename) and use_cache:
+        return pd.read_csv(filename)
+    else:
+        df = pd.read_sql("""
+        SELECT * 
+        FROM customers;
+        """
+        , get_connection('mall_customers'))
+        df.to_csv(filename, index=False)
+        return df
+
+#____________________________________________________________________________________
+
 def get_zillow_data(use_cache=True):
     """Retrieves predictions_2017, properties_2017, unique_properties, propertylandusetype,
     storytype, and typeconstructiontype tables from the Zillow Dataset"""
